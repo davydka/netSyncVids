@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxHPVPlayer.h"
+#include "ofxOsc.h"
 
 class ofApp : public ofBaseApp
 {
@@ -12,10 +13,11 @@ public:
     void exit();
 
     void keyPressed(int key);
-    void windowResized(int w, int h);
     
-    ofxHPVPlayer top_left;
-    ofxHPVPlayer top_right;
-    ofxHPVPlayer bottom_left;
-    ofxHPVPlayer bottom_right;
+    ofxHPVPlayer player;
+
+	ofxOscSender sender;
+	ofxOscReceiver receiver;
+
+	vector<string> arguments;
 };
