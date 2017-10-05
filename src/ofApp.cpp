@@ -23,7 +23,7 @@ void ofApp::setup() {
 	HPV::InitHPVEngine();
 
 	cout << "----" << endl;
-	for (int i=0; i<arguments.size(); ++i){
+	for (int i=0; i<arguments.size(); ++i) {
 		// cout << arguments.at(i) << endl;
 		if(arguments.at(i) == "0") {
 			master = true;
@@ -42,7 +42,7 @@ void ofApp::setup() {
 	// Sender
 	if(master) {
 		player.load("top_left.hpv"); // for getting playyer length
-		if(server.setup(PORT)){
+		if(server.setup(PORT)) {
 			cout << "server created" << endl;
 		}
 		frame_length = player.getTotalNumFrames();
@@ -50,18 +50,19 @@ void ofApp::setup() {
 	}
 
 	// Players
+	ofSetWindowPosition(0, 0);
 	if(playerId == 1) {
 		player.load("top_left.hpv");
-		ofSetWindowPosition(0, 0);
+		// ofSetWindowPosition(0, 0);
 	} else if(playerId == 2) {
 		player.load("top_right.hpv");
-		ofSetWindowPosition(ofGetWidth()+offset, 0);
+		// ofSetWindowPosition(ofGetWidth()+offset, 0);
 	} else if(playerId == 3) {
 		player.load("bottom_left.hpv");
-		ofSetWindowPosition(0, ofGetHeight()+offset+23);
+		// ofSetWindowPosition(0, ofGetHeight()+offset+23);
 	} else if(playerId == 4) {
 		player.load("bottom_right.hpv");
-		ofSetWindowPosition(ofGetWidth()+offset, ofGetHeight()+offset+23);
+		// ofSetWindowPosition(ofGetWidth()+offset, ofGetHeight()+offset+23);
 	}
 
 	if(!master) {
@@ -71,7 +72,7 @@ void ofApp::setup() {
 		player.play();
 		player.setPaused(true);
 
-		if(client.setup(HOST, PORT)){
+		if(client.setup(HOST, PORT)) {
 			ofAddListener(client.messageReceived, this, &ofApp::onMessageComing);
 		}
 	}
@@ -80,11 +81,11 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	if(master) {
-		if(server.isConnected()){
+		if(server.isConnected()) {
 			server.update();
-			if(server.hasClients()){
+			if(server.hasClients()) {
 				for (auto & client : server.getClients()) {
-					if(client->isCalibrated()){
+					if(client->isCalibrated()) {
 						client->send("FRAME " + ofToString(cur_frame));
 					}
 				}
@@ -101,17 +102,17 @@ void ofApp::update() {
 	}
     
 	bool allReady = readyPlayer1 && readyPlayer2;
-	if (allReady && master){
+	if (allReady && master) {
 		cout << "all ready" << endl;
 		
 	}
 
 }
 
-void ofApp::onMessageComing(string & message){
+void ofApp::onMessageComing(string & message) {
 	// cout << message <<endl;
 	const string messageFrame = "FRAME ";
-	if(message.find(messageFrame) == 0 && client.isCalibrated()){
+	if(message.find(messageFrame) == 0 && client.isCalibrated()) {
 		int frame = ofToInt(message.substr(messageFrame.length()));
 		player.seekToFrame(frame);
 	}
