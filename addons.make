@@ -1,2 +1,3 @@
 ofxHPVPlayer
 ofxOsc
+ofxMidi

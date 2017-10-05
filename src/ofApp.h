@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxHPVPlayer.h"
 #include "ofxOsc.h"
+// #include "ofxMidi.h"
 
 class ofApp : public ofBaseApp
 {
@@ -16,8 +17,12 @@ public:
     
     ofxHPVPlayer player;
 
-	ofxOscSender sender;
-	ofxOscReceiver receiver;
+	ofxOscSender masterSender;
+	ofxOscSender player1;
+	ofxOscSender player2;
+	ofxOscReceiver masterReceiver;
+	ofxOscReceiver receiver1;
+	ofxOscReceiver receiver2;
 
 	vector<string> arguments;
 };

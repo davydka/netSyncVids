@@ -3,29 +3,31 @@
 int SIDE_WIDTH;
 int SIDE_HEIGHT;
 
-int cur_counter;
-int prev_counter;
+int cur_frame = 0;
+int received_frame = 0;
+// int prev_counter;
 
 static int64_t prev_frame = 0;
-static int64_t cur_frame = 0;
+// static int64_t cur_frame = 0;
 static uint8_t offset = 1;
 
 bool master = false;
+bool ready = true;
 int playerId = 0;
+bool readyPlayer1 = false;
+bool readyPlayer2 = false;
+bool readyPlayer3 = false;
+bool readyPlayer4 = false;
+
 #define HOST "localhost"
 #define PORT 12345
+#define playerPort1 12346
+#define playerPort2 12347
 
 //--------------------------------------------------------------
-void ofApp::setup()
-{
-    HPV::InitHPVEngine();
-    
-	// cout << arguments[0] << endl;
-	/*
-	if(arguments[0] == 1){
-		cout << "player 1" << endl;
-	}
-	*/
+void ofApp::setup() {
+	HPV::InitHPVEngine();
+
 	cout << "----" << endl;
 	for (int i=0; i<arguments.size(); ++i){
 		cout << arguments.at(i) << endl;
@@ -33,34 +35,38 @@ void ofApp::setup()
 			master = true;
 		}
 		if(arguments.at(i) == "1" || arguments.at(i) == "2" || arguments.at(i) == "3" || arguments.at(i) == "4") {
-
 			playerId = ofToInt(arguments.at(i));
 		}
-
 	}
 	cout << "----" << endl;
-	receiver.setup(PORT);
-	sender.setup(HOST, PORT);
-	cur_counter = 0;
-	prev_counter = 0;
+	masterSender.setup(HOST, PORT);
+	masterReceiver.setup(PORT);
+
+	if(master) {
+		player1.setup(HOST, playerPort1);
+		player2.setup(HOST, playerPort1);
+	}
 
     player.init(HPV::NewPlayer());
-	if(playerId == 1)
+	if(playerId == 1) {
 		player.load("top_left.hpv");
-	else if(playerId == 2)
+		receiver1.setup(PORT);
+	} else if(playerId == 2) {
 		player.load("top_right.hpv");
-	else if(playerId == 3)
+		receiver2.setup(PORT);
+	} else if(playerId == 3) {
 		player.load("bottom_left.hpv");
-	else if(playerId == 4)
+	} else if(playerId == 4) {
 		player.load("bottom_right.hpv");
+	}
     player.setLoopState(OF_LOOP_NORMAL);
     player.setDoubleBuffered(true);
 	
-    player.play();
-    player.setPaused(true);
-    
-    ofSetVerticalSync(false);
-    ofSetFrameRate(15);
+	player.play();
+	player.setPaused(true);
+
+	ofSetVerticalSync(false);
+	ofSetFrameRate(15);
     
 	ofSetWindowPosition(0, 0);
     
@@ -76,26 +82,76 @@ void ofApp::setup()
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	
-	// cur_counter++;
-	if (cur_counter >= player.getTotalNumFrames()){
-		cur_counter = 0;
-	}
 	ofxOscMessage m;
-	m.setAddress("/frame");
-	m.addIntArg(cur_counter);
-	sender.sendMessage(m, false);
-    
-	if (cur_frame != prev_frame){
-		player.seekToFrame(cur_counter);
-		prev_frame = cur_frame;
+	m.setAddress("/player");
+	m.addIntArg(playerId);
+	m.addBoolArg(ready);
+	// m.addIntArg(cur_frame);
+	masterSender.sendMessage(m, false);
+	
+	while(masterReceiver.hasWaitingMessages()){
+		ofxOscMessage m;
+		masterReceiver.getNextMessage(m);
+		if(m.getAddress() == "/player"){
+			int thisPlayerId = m.getArgAsInt(0);
+			int thisPlayerReady = m.getArgAsBool(1);
+			// received_frame = m.getArgAsInt(2);
+			
+			if(thisPlayerId == 1 && thisPlayerReady)
+				readyPlayer1 = true;
+			if(thisPlayerId == 2 && thisPlayerReady)
+				readyPlayer2 = true;
+		}
+	}
+
+	if(playerId == 1) {
+		while(receiver1.hasWaitingMessages()){
+			cout << "player 1" << endl;
+			ofxOscMessage m;
+			receiver1.getNextMessage(m);
+
+			if(m.getAddress() == "/frame"){
+				cout << "received 1" << endl;
+				received_frame = m.getArgAsInt(0);
+
+				cur_frame = received_frame;
+				player.seekToFrame(cur_frame);
+				prev_frame = cur_frame;
+				if(master)
+					cur_frame++;
+			}
+		}
+	}
+
+	if(playerId == 2) {
+		while(receiver2.hasWaitingMessages()){
+			cout << "player 2" << endl;
+			ofxOscMessage m;
+			receiver2.getNextMessage(m);
+
+			if(m.getAddress() == "/frame"){
+				cout << "received 2" << endl;
+				received_frame = m.getArgAsInt(0);
+
+				cur_frame = received_frame;
+				player.seekToFrame(cur_frame);
+				prev_frame = cur_frame;
+				if(master)
+					cur_frame++;
+			}
+		}
 	}
     
-	cur_counter++;
-	cur_frame++;
-
-	if (cur_frame >= player.getTotalNumFrames()){
-		cur_frame = 0;
+	bool allReady = readyPlayer1 && readyPlayer2;
+	if (allReady && master){
+		cout << "all ready" << endl;
+		cout << received_frame << endl;
+		
+		ofxOscMessage m;
+		m.setAddress("/frame");
+		m.addIntArg(cur_frame);
+		player1.sendMessage(m, false);
+		player2.sendMessage(m, false);
 	}
 
 	HPV::Update();
@@ -105,6 +161,7 @@ void ofApp::update() {
 void ofApp::draw() {
     ofBackground(255);
 	player.draw(0, 0, ofGetWidth(), ofGetHeight());
+	// ready = true;
 }
 
 //--------------------------------------------------------------
