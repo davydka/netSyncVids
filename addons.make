@@ -1,3 +1,4 @@
 ofxHPVPlayer
 ofxOsc
-ofxMidi
+ofxNetwork
+ofxNetworkSync

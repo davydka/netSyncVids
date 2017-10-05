@@ -2,8 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxHPVPlayer.h"
-#include "ofxOsc.h"
-// #include "ofxMidi.h"
+#include "ofxNetworkSync.h"
 
 class ofApp : public ofBaseApp
 {
@@ -12,17 +11,14 @@ public:
     void update();
     void draw();
     void exit();
-
     void keyPressed(int key);
+
+	void onMessageComing(string & message);
     
     ofxHPVPlayer player;
 
-	ofxOscSender masterSender;
-	ofxOscSender player1;
-	ofxOscSender player2;
-	ofxOscReceiver masterReceiver;
-	ofxOscReceiver receiver1;
-	ofxOscReceiver receiver2;
+	ofxNetworkSyncServer server;
+	ofxNetworkSyncClient client;
 
 	vector<string> arguments;
 };
