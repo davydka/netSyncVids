@@ -36,7 +36,7 @@ void ofApp::setup() {
 	cout << "----" << endl;
 
     player.init(HPV::NewPlayer());
-	ofSetVerticalSync(false);
+	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
     
 	// Sender
