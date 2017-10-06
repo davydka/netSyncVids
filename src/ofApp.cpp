@@ -130,7 +130,7 @@ void ofApp::draw() {
 		// ready = true;
 	}
 	if(playerId == 1) {
-		player.draw(-540, 0, ofGetWidth()*2, ofGetHeight());
+		player.draw(0, 0, ofGetWidth()*2, ofGetHeight());
 	}
 	if(playerId == 2) {
 		player.draw(-540, 0, ofGetWidth()*2, ofGetHeight());
