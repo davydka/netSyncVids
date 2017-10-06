@@ -52,7 +52,7 @@ void ofApp::setup() {
 
 	// Players
 	ofSetWindowPosition(0, 0);
-	// ofSetWindowShape(540, 1920);
+	ofSetWindowShape(540, 1920);
 	if(playerId == 1) {
 		player.load("bbb_export.hpv");
 		ofSetWindowPosition(540, 0);
