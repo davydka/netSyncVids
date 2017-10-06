@@ -126,8 +126,13 @@ void ofApp::onMessageComing(string & message) {
 void ofApp::draw() {
 	if(!master) {
 		ofBackground(255);
-		player.draw(0, 0, ofGetWidth(), ofGetHeight());
 		// ready = true;
+	}
+	if(playerId == 1) {
+		player.draw(-540, 0, ofGetWidth()*2, ofGetHeight());
+	}
+	if(playerId == 2) {
+		player.draw(-540, 0, ofGetWidth()*2, ofGetHeight());
 	}
 }
 
