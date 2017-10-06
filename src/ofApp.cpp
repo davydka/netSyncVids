@@ -50,13 +50,15 @@ void ofApp::setup() {
 	}
 
 	// Players
-	ofSetWindowPosition(0, 0);
-	ofSetWindowShape(1080, 1920);
+	// ofSetWindowPosition(0, 0);
+	ofSetWindowShape(540, 1920);
 	if(playerId == 1) {
 		player.load("bbb_export.hpv");
+		ofSetWindowPosition(540, 0);
 		// ofSetWindowPosition(0, 0);
 	} else if(playerId == 2) {
 		player.load("bbb_export.hpv");
+		ofSetWindowPosition(-540, 0);
 		// ofSetWindowPosition(ofGetWidth()+offset, 0);
 	} else if(playerId == 3) {
 		player.load("bbb_export.hpv");
