@@ -15,7 +15,7 @@ bool readyPlayer2 = false;
 bool readyPlayer3 = false;
 bool readyPlayer4 = false;
 
-#define HOST "localhost"
+#define HOST "192.168.3.1"
 #define PORT 12345
 
 //--------------------------------------------------------------
@@ -51,17 +51,18 @@ void ofApp::setup() {
 
 	// Players
 	ofSetWindowPosition(0, 0);
+	ofSetWindowShape(1080, 1920);
 	if(playerId == 1) {
-		player.load("top_left.hpv");
+		player.load("bbb_export.hpv");
 		// ofSetWindowPosition(0, 0);
 	} else if(playerId == 2) {
-		player.load("top_right.hpv");
+		player.load("bbb_export.hpv");
 		// ofSetWindowPosition(ofGetWidth()+offset, 0);
 	} else if(playerId == 3) {
-		player.load("bottom_left.hpv");
+		player.load("bbb_export.hpv");
 		// ofSetWindowPosition(0, ofGetHeight()+offset+23);
 	} else if(playerId == 4) {
-		player.load("bottom_right.hpv");
+		player.load("bbb_export.hpv");
 		// ofSetWindowPosition(ofGetWidth()+offset, ofGetHeight()+offset+23);
 	}
 
