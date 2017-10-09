@@ -41,3 +41,7 @@
 * https://www.phoronix.com/scan.php?page=news_item&px=Ubuntu-16.04-OI-Intel-GL-4.2
 
 * `glxinfo | grep OpenGL`
+
+
+https://wiki.archlinux.org/index.php/intel_graphics#Tips_and_tricks
+
